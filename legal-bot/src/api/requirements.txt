@@ -1,0 +1,17 @@
+fastapi>=0.121.2
+uvicorn[standard]==0.30.0
+gunicorn==23.0.0
+azure-identity==1.19.0
+aiohttp==3.13.2
+azure-ai-inference==1.0.0b9
+azure-ai-projects==1.0.0
+azure-search-documents==11.6.0
+azure-core==1.34.0
+azure-core-tracing-opentelemetry
+azure-monitor-opentelemetry==1.6.9
+opentelemetry-sdk
+setuptools==80.9.0
+starlette>=0.47.2
+jinja2
+python-dotenv==1.2.2
+pydantic==2.13.4

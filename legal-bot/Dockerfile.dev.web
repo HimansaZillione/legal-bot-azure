@@ -1,0 +1,6 @@
+FROM node:20-slim
+WORKDIR /app
+COPY src/web/package.json ./
+RUN npm install
+COPY src/web/ ./
+CMD ["npm", "run", "dev", "--", "--host"]

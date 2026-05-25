@@ -1,0 +1,25 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/api:/app
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./src/web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    restart: unless-stopped
