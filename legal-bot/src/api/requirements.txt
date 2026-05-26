@@ -16,3 +16,5 @@ jinja2
 python-dotenv==1.2.2
 pydantic==2.13.4
 python-multipart
+azure-storage-blob==12.28.0
+openai==2.29.0
