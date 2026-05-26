@@ -4,25 +4,52 @@ export interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
 export interface Citation {
   title: string;
   path: string;
 }
 
-
-export interface StreamChunk {
-  type: "message" | "completed_message" | "stream_end" | "citations";
-  content?: string;
-  citations?: Citation[];
+export interface ImageRef {
+  path: string;
+  title: string;
 }
 
-
+export interface StreamChunk {
+  type: "message" | "completed_message" | "stream_end" | "citations" | "images";
+  content?: string;
+  citations?: Citation[];
+  images?: ImageRef[];
+}
 
 export async function fetchCases(): Promise<string[]> {
   const res = await fetch(`${BASE_URL}/api/cases`);
   if (!res.ok) throw new Error("Failed to fetch cases");
   const data = await res.json();
   return data.cases as string[];
+}
+
+export async function uploadSupportingImage(
+  caseId: string,
+  file: File,
+  title: string,
+  tags: string
+): Promise<{ path: string; title: string; tags: string[] }> {
+  const form = new FormData();
+  form.append("case_id", caseId);
+  form.append("title", title);
+  form.append("tags", tags);
+  form.append("file", file);
+
+  const res = await fetch(`${BASE_URL}/api/images/upload`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any).detail || "Upload failed");
+  }
+  return res.json();
 }
 
 export async function* streamChat(
