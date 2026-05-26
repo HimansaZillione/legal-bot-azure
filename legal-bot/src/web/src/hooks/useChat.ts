@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { streamChat, Citation } from "../api/client";
+import { streamChat, Citation, ImageRef } from "../api/client";
 
 export interface ChatMessage {
   id: string;
@@ -8,6 +8,7 @@ export interface ChatMessage {
   timestamp: Date;
   streaming?: boolean;
   citations?: Citation[];
+  images?: ImageRef[];
 }
 
 export function useChat(caseId: string) {
@@ -46,6 +47,7 @@ export function useChat(caseId: string) {
           timestamp: new Date(),
           streaming: true,
           citations: [],
+          images: [],
         },
       ]);
 
@@ -63,16 +65,18 @@ export function useChat(caseId: string) {
               )
             );
           }
+
           if (chunk.type === "completed_message" && chunk.content) {
-    fullContent = chunk.content;
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === assistantId
-          ? { ...m, content: chunk.content!, streaming: false }
-          : m
-      )
-    );
-  }
+            fullContent = chunk.content;
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId
+                  ? { ...m, content: chunk.content!, streaming: false }
+                  : m
+              )
+            );
+          }
+
           if (chunk.type === "citations" && chunk.citations) {
             setMessages((prev) =>
               prev.map((m) =>
@@ -82,6 +86,17 @@ export function useChat(caseId: string) {
               )
             );
           }
+
+          if (chunk.type === "images" && chunk.images) {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId
+                  ? { ...m, images: chunk.images }
+                  : m
+              )
+            );
+          }
+
           if (chunk.type === "stream_end") {
             setMessages((prev) =>
               prev.map((m) =>
